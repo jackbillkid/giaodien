@@ -1,0 +1,25 @@
+# Python virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE and Project files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Tool uploads
+uploads/
+
+# EXPLICITLY INCLUDE SCITER DLLs
+!sciter/*.dll
