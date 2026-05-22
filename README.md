@@ -1,87 +1,90 @@
-# Sciter GUI Self-Contained Module (Vietnamese Guide)
+# Sciter Self-Contained Python Module
 
-Dự án này là một bộ khung giao diện desktop hoàn chỉnh viết bằng **Python + Sciter (HTML/CSS/JS) + Flask**, đã được đóng gói cực kỳ tinh gọn và độc lập. Bạn có thể copy module này sang bất kỳ thư mục nào trên máy tính và chạy ngay lập tức mà không cần cài đặt cấu hình rườm rà.
+Bộ thư viện **Sciter** đóng gói tự chứa (self-contained) dành riêng cho Python. Giải pháp này tích hợp sẵn cả mã nguồn Python Wrapper và nhân nhị phân engine (`sciter64.dll` / `sciter-webview.dll`), cho phép bạn xây dựng giao diện desktop HTML/CSS/JS một cách độc lập tuyệt đối.
 
 ---
 
-## 📁 Cấu Trúc Thư Mục Dự Án
+## ⚡ Sự Tiện Lợi Vượt Trội: Không Phụ Thuộc Trình Duyệt & WebView
+
+Hầu hết các thư viện GUI HTML5 cho Python hiện nay (như Eel, PyWebView, Electron,...) đều gặp phải những hạn chế lớn về mặt môi trường chạy của người dùng. Module **Sciter tự chứa** này giải quyết triệt để tất cả các vấn đề đó:
+
+* **Không phụ thuộc Google Chrome / Chromium**: 
+  Trái ngược với `Eel`, Sciter không yêu cầu máy tính của người dùng phải cài đặt sẵn Google Chrome hoặc trình duyệt nhân Chromium. Ứng dụng của bạn sẽ tự render giao diện mà không cần gọi bất kỳ tiến trình trình duyệt bên ngoài nào.
+* **Không phụ thuộc WebView của hệ điều hành (WebView2 / WebKit)**:
+  Các thư viện như `PyWebView` phụ thuộc vào trình duyệt nhúng của OS (như Microsoft Edge WebView2 trên Windows, Safari trên macOS, WebKitGtk trên Linux). Nếu hệ điều hành của người dùng chưa được cập nhật WebView2 (rất phổ biến trên các bản Windows rút gọn hoặc máy doanh nghiệp), ứng dụng sẽ bị crash ngay khi mở. Sciter mang theo engine render riêng của mình, đảm bảo **luôn chạy được 100%** trên mọi máy Windows.
+* **Siêu nhẹ & Tiết kiệm tài nguyên**:
+  Nhân Sciter chỉ là một tệp DLL duy nhất (~19MB). Khi chạy, lượng RAM tiêu thụ cực kỳ nhỏ (chỉ khoảng 15-30MB RAM, bằng 1/10 so với các ứng dụng cồng kềnh chạy nhân Chromium như Electron hoặc CEF).
+* **Đóng gói di động 100%**:
+  Mọi thứ cần thiết cho giao diện đều nằm gọn trong thư mục `sciter/`. Bạn chỉ cần copy thư mục này đi bất cứ đâu là có thể `import sciter` lập tức mà không cần cài đặt thêm bất kỳ SDK hay thiết lập đường dẫn môi trường (PATH/DLL Directory) nào.
+
+---
+
+## 📁 Cấu Trúc Module
 
 ```text
-├── sciter/                 # Module Sciter tự chứa (Gồm mã Python & file DLL gốc)
-│   ├── sciter64.dll        # File nhân Sciter engine 64-bit
-│   ├── sciter-webview.dll  # Tiện ích webview bổ trợ
-│   └── ... (các file python của PySciter)
-├── gui_manager.py          # Trình quản lý giao diện chính (Nhúng sẵn HTML/CSS/JS)
-├── main.py                 # File chạy Tool của bạn (Chỉ chứa logic nghiệp vụ Python)
-└── .gitignore              # Cấu hình bỏ qua các thư mục rác khi đưa lên Git
+sciter/
+├── sciter64.dll        # Nhân engine render chính (Windows 64-bit)
+├── sciter-webview.dll  # Tiện ích webview mở rộng (nếu cần dùng tag <frame behaviour="webview">)
+├── capi/               # Cấu trúc C-API giao tiếp với Python
+│   ├── scapi.py        # Đã được tuỳ biến để tự nhận diện và nạp DLL nội bộ trong package
+│   └── ...
+└── ... (Các file chức năng để lập trình giao diện trên Python)
 ```
 
 ---
 
-## ⚡ Điểm Vượt Trội Của Module Này
+## 🚀 Hướng Dẫn Sử Dụng Nhanh
 
-1. **Không phụ thuộc file tĩnh ngoài ổ đĩa**: Toàn bộ giao diện HTML, CSS, và JS đã được nhúng thẳng vào file `gui_manager.py`. Khi khởi chạy, giao diện được ghi ra bộ nhớ tạm (`tempfile`) và tự động dọn dẹp khi tắt app.
-2. **Không cần cài đặt Sciter SDK lên máy**: Tệp `sciter64.dll` được nhúng trực tiếp bên trong package `sciter`. Khi import, module sẽ tự động tìm và liên kết DLL nội bộ này.
-3. **Cổng giao tiếp động (Dynamic Port)**: Không còn lỗi cứng cổng (hardcoded port). Cổng API Flask được cấu hình linh hoạt từ Python và tự động đồng bộ sang JavaScript.
-4. **Liên kết logic dễ dàng bằng Decorators**: Chỉ cần dùng `@gui.on_save`, `@gui.on_open_file`,... bạn có thể dễ dàng map các nút bấm trên giao diện vào hàm xử lý Python tương ứng.
+### 1. Cách tích hợp vào dự án mới
+Chỉ cần copy thư mục `sciter/` này vào thư mục nguồn của dự án của bạn.
 
----
-
-## 🚀 Hướng Dẫn Cài Đặt & Chạy Thử
-
-### 1. Yêu cầu hệ thống
-* Python 3.8 trở lên (khuyên dùng Windows 64-bit).
-
-### 2. Cài đặt thư viện phụ thuộc
-Bạn chỉ cần cài đặt thư viện `Flask` để làm cổng giao tiếp API:
-```bash
-pip install flask
-```
-*(Không cần chạy `pip install pysciter` vì thư viện `sciter` tự chứa đã có sẵn trong dự án).*
-
-### 3. Chạy ứng dụng
-Chạy file `main.py` từ terminal:
-```bash
-python main.py
-```
-
----
-
-## 🛠️ Hướng Dẫn Tái Sử Dụng Cho Dự Án Khác
-
-Để đem giao diện này sang bất kỳ tool Python nào khác của bạn, chỉ cần làm theo **3 bước**:
-
-### Bước 1: Copy tài nguyên
-Sao chép thư mục `sciter` (chứa DLL) và file `gui_manager.py` vào thư mục dự án mới của bạn.
-
-### Bước 2: Viết code Python (`main.py`)
-Tạo file chạy cho tool của bạn và viết code đăng ký các nút bấm như sau:
+### 2. Viết code Python gọi giao diện Sciter
+Tạo file script Python bất kỳ (ví dụ: `app.py`) cùng cấp với thư mục `sciter/` và sử dụng như sau:
 
 ```python
 import os
-from gui_manager import SciterGUIManager
+import sciter
 
-# 1. Khởi tạo giao diện (chạy cổng 5000 hoặc tùy ý)
-gui = SciterGUIManager(port=5000)
+# Khởi tạo cửa sổ Sciter
+class MyAppWindow(sciter.Window):
+    def __init__(self):
+        # Tạo cửa sổ chính
+        super().__init__(ismain=True, uni_theme=True)
+        
+    def setup_ui(self):
+        # Nạp trực tiếp mã HTML giao diện
+        self.load_html("""
+        <html>
+        <head>
+            <style>
+                body { 
+                    font-family: system-ui; 
+                    background: linear-gradient(135deg, #1e3c72, #2a5298); 
+                    color: white; 
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                h1 { margin-top: 15%; }
+            </style>
+        </head>
+        <body>
+            <h1>Chào mừng bạn đến với Sciter!</h1>
+            <p>Giao diện HTML5 siêu nhẹ, không phụ thuộc Chrome hay WebView2.</p>
+        </body>
+        </html>
+        """)
 
-# 2. Đăng ký các hàm Python tương tác với giao diện
-@gui.on_save
-def my_save_logic(data):
-    # logic lưu dữ liệu của tool mới
-    return "Đã lưu bởi Tool mới"
-
-@gui.on_open_file
-def my_open_file(filepath):
-    # logic mở file
-    if os.path.exists(filepath):
-        os.startfile(filepath)
-        return "Đã mở file thành công"
-    return "File không tồn tại"
-
-# 3. Chạy giao diện
 if __name__ == "__main__":
-    gui.start()
+    wnd = MyAppWindow()
+    wnd.setup_ui()
+    # Hiển thị cửa sổ và chạy vòng lặp sự kiện
+    wnd.collapse(False).expand()
+    wnd.run_app()
 ```
 
-### Bước 3: Chạy ứng dụng mới
-Mở terminal tại thư mục dự án mới và chạy `python main.py`. Giao diện Desktop sẽ hiện lên ngay lập tức và các nút bấm sẽ chạy theo logic Python mới bạn vừa viết!
+### 3. Đóng gói ứng dụng thành file .EXE
+Vì module này tự chứa đầy đủ các file DLL, bạn có thể dễ dàng dùng PyInstaller để đóng gói thành 1 file EXE duy nhất để phân phối cho người dùng chạy trực tiếp:
+```bash
+pyinstaller --noconfirm --onedir --windowed --add-data "sciter;sciter" app.py
+```
+*(Giao diện sẽ chạy mượt mà trên tất cả các máy tính chạy Windows của khách hàng mà không lo bị lỗi thiếu trình duyệt hay thiếu driver WebView2).*
