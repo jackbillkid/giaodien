@@ -1,90 +1,59 @@
-# Sciter Self-Contained Python Module
+# Miniblink Self-Contained Python Module (SmartApp SaaS)
 
-Bộ thư viện **Sciter** đóng gói tự chứa (self-contained) dành riêng cho Python. Giải pháp này tích hợp sẵn cả mã nguồn Python Wrapper và nhân nhị phân engine (`sciter64.dll` / `sciter-webview.dll`), cho phép bạn xây dựng giao diện desktop HTML/CSS/JS một cách độc lập tuyệt đối.
+Bộ thư viện **Miniblink** đóng gói tự chứa (self-contained) dành riêng cho Python. Giải pháp này sử dụng nhân Chromium siêu nhẹ (`node.dll`), cho phép bạn xây dựng giao diện desktop HTML/CSS/JS chất lượng cao, hoàn toàn độc lập và không phụ thuộc vào hệ thống.
 
 ---
 
-## ⚡ Sự Tiện Lợi Vượt Trội: Không Phụ Thuộc Trình Duyệt & WebView
+## ⚡ Sự Tiện Lợi Vượt Trội: Không Phụ Thuộc WebView2 hay Chrome
 
-Hầu hết các thư viện GUI HTML5 cho Python hiện nay (như Eel, PyWebView, Electron,...) đều gặp phải những hạn chế lớn về mặt môi trường chạy của người dùng. Module **Sciter tự chứa** này giải quyết triệt để tất cả các vấn đề đó:
+Hầu hết các thư viện GUI HTML5 cho Python hiện nay (như Eel, PyWebView, Electron,...) đều gặp phải những hạn chế lớn về mặt môi trường chạy của người dùng. Module **Miniblink tự chứa** này giải quyết triệt để tất cả các vấn đề đó:
 
-* **Không phụ thuộc Google Chrome / Chromium**: 
-  Trái ngược với `Eel`, Sciter không yêu cầu máy tính của người dùng phải cài đặt sẵn Google Chrome hoặc trình duyệt nhân Chromium. Ứng dụng của bạn sẽ tự render giao diện mà không cần gọi bất kỳ tiến trình trình duyệt bên ngoài nào.
 * **Không phụ thuộc WebView của hệ điều hành (WebView2 / WebKit)**:
-  Các thư viện như `PyWebView` phụ thuộc vào trình duyệt nhúng của OS (như Microsoft Edge WebView2 trên Windows, Safari trên macOS, WebKitGtk trên Linux). Nếu hệ điều hành của người dùng chưa được cập nhật WebView2 (rất phổ biến trên các bản Windows rút gọn hoặc máy doanh nghiệp), ứng dụng sẽ bị crash ngay khi mở. Sciter mang theo engine render riêng của mình, đảm bảo **luôn chạy được 100%** trên mọi máy Windows.
+  Các thư viện như `PyWebView` phụ thuộc vào trình duyệt nhúng của OS (như Microsoft Edge WebView2 trên Windows 10/11, Safari trên macOS, WebKitGtk trên Linux). Nếu hệ điều hành của người dùng chưa được cập nhật WebView2 (ví dụ trên các bản Windows rút gọn hoặc máy doanh nghiệp cũ), ứng dụng sẽ bị crash ngay khi mở. Miniblink mang theo engine render riêng của mình (`node.dll`), đảm bảo **chạy tốt trên cả Windows cũ (như Windows 7, Windows 10 LTSC) đến Windows 11**.
+* **Không yêu cầu cài đặt sẵn Google Chrome**: 
+  Trái ngược với `Eel`, Miniblink tự render giao diện mà không cần gọi bất kỳ tiến trình Chrome bên ngoài nào của người dùng.
 * **Siêu nhẹ & Tiết kiệm tài nguyên**:
-  Nhân Sciter chỉ là một tệp DLL duy nhất (~19MB). Khi chạy, lượng RAM tiêu thụ cực kỳ nhỏ (chỉ khoảng 15-30MB RAM, bằng 1/10 so với các ứng dụng cồng kềnh chạy nhân Chromium như Electron hoặc CEF).
-* **Đóng gói di động 100%**:
-  Mọi thứ cần thiết cho giao diện đều nằm gọn trong thư mục `sciter/`. Bạn chỉ cần copy thư mục này đi bất cứ đâu là có thể `import sciter` lập tức mà không cần cài đặt thêm bất kỳ SDK hay thiết lập đường dẫn môi trường (PATH/DLL Directory) nào.
+  Nhân Chromium của Miniblink chỉ gói gọn trong một tệp DLL duy nhất (`node.dll` ~15MB-40MB). Lượng RAM tiêu thụ tối ưu hơn rất nhiều so với các ứng dụng chạy Electron cồng kềnh.
+* **Đầy đủ tính năng Web hiện đại**:
+  Hỗ trợ hoàn hảo **WebSockets thời gian thực**, **HTML5/CSS3/JS**, Canvas, SVG và tích hợp thư viện vẽ sơ đồ **Drawflow** mà không gặp bất kỳ lỗi kết nối hay đơ giao diện nào.
 
 ---
 
-## 📁 Cấu Trúc Module
+## 📁 Cấu Trúc Dự Án
 
 ```text
-sciter/
-├── sciter64.dll        # Nhân engine render chính (Windows 64-bit)
-├── sciter-webview.dll  # Tiện ích webview mở rộng (nếu cần dùng tag <frame behaviour="webview">)
-├── capi/               # Cấu trúc C-API giao tiếp với Python
-│   ├── scapi.py        # Đã được tuỳ biến để tự nhận diện và nạp DLL nội bộ trong package
-│   └── ...
-└── ... (Các file chức năng để lập trình giao diện trên Python)
+d:\giaodiensciter\giaodien/
+├── main.py             # Điểm khởi chạy chính (FastAPI Server + Miniblink WebUI Window)
+├── node.dll            # Nhân Chromium của Miniblink (bản 64-bit tự động tích hợp)
+├── icon.ico            # Biểu tượng ứng dụng
+├── uploads/            # Thư mục lưu trữ tệp tin tải lên của người dùng
+└── ui/                 # Thư mục chứa toàn bộ giao diện HTML/CSS/JS tĩnh
+    ├── index.html      # Giao diện chính chứa các tab (đã inlined tránh lỗi bất đồng bộ)
+    ├── style.css       # File định kiểu giao diện hiện đại (Dark Mode, UI Elements)
+    ├── common.js       # Script tiện ích và kết nối WebSocket thời gian thực
+    └── ... (Các file script theo từng tab chức năng: users, files, workflow,...)
 ```
 
 ---
 
 ## 🚀 Hướng Dẫn Sử Dụng Nhanh
 
-### 1. Cách tích hợp vào dự án mới
-Chỉ cần copy thư mục `sciter/` này vào thư mục nguồn của dự án của bạn.
-
-### 2. Viết code Python gọi giao diện Sciter
-Tạo file script Python bất kỳ (ví dụ: `app.py`) cùng cấp với thư mục `sciter/` và sử dụng như sau:
-
-```python
-import os
-import sciter
-
-# Khởi tạo cửa sổ Sciter
-class MyAppWindow(sciter.Window):
-    def __init__(self):
-        # Tạo cửa sổ chính
-        super().__init__(ismain=True, uni_theme=True)
-        
-    def setup_ui(self):
-        # Nạp trực tiếp mã HTML giao diện
-        self.load_html("""
-        <html>
-        <head>
-            <style>
-                body { 
-                    font-family: system-ui; 
-                    background: linear-gradient(135deg, #1e3c72, #2a5298); 
-                    color: white; 
-                    text-align: center;
-                    vertical-align: middle;
-                }
-                h1 { margin-top: 15%; }
-            </style>
-        </head>
-        <body>
-            <h1>Chào mừng bạn đến với Sciter!</h1>
-            <p>Giao diện HTML5 siêu nhẹ, không phụ thuộc Chrome hay WebView2.</p>
-        </body>
-        </html>
-        """)
-
-if __name__ == "__main__":
-    wnd = MyAppWindow()
-    wnd.setup_ui()
-    # Hiển thị cửa sổ và chạy vòng lặp sự kiện
-    wnd.collapse(False).expand()
-    wnd.run_app()
+### 1. Cài đặt các thư viện cần thiết
+Đảm bảo máy tính của bạn đã cài đặt Python 3.8+ (đã hỗ trợ hoàn toàn Python 3.14 x64). Chạy lệnh cài đặt các gói phụ thuộc:
+```bash
+pip install fastapi uvicorn psutil WkeMiniblink
 ```
 
-### 3. Đóng gói ứng dụng thành file .EXE
-Vì module này tự chứa đầy đủ các file DLL, bạn có thể dễ dàng dùng PyInstaller để đóng gói thành 1 file EXE duy nhất để phân phối cho người dùng chạy trực tiếp:
+### 2. Khởi chạy Ứng dụng
+Chạy trực tiếp file `main.py` từ Terminal/Command Prompt:
 ```bash
-pyinstaller --noconfirm --onedir --windowed --add-data "sciter;sciter" app.py
+python main.py
+```
+Ứng dụng sẽ tự động kích hoạt FastAPI backend chạy ở cổng `5000` và khởi tạo cửa sổ desktop Miniblink hiển thị giao diện SmartApp SaaS.
+
+### 3. Đóng gói ứng dụng thành file `.EXE`
+Vì dự án tự chứa đầy đủ tệp `node.dll` và thư mục `ui/`, bạn có thể dễ dàng dùng PyInstaller để đóng gói thành thư mục hoặc tệp EXE duy nhất để phân phối cho người dùng chạy trực tiếp:
+```bash
+pyinstaller --noconfirm --onedir --windowed --add-data "ui;ui" --add-data "node.dll;." main.py
 ```
 *(Giao diện sẽ chạy mượt mà trên tất cả các máy tính chạy Windows của khách hàng mà không lo bị lỗi thiếu trình duyệt hay thiếu driver WebView2).*
