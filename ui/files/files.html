@@ -1,0 +1,55 @@
+<div id="tab-files" class="tab-content">
+  <div class="card" style="margin-bottom: 20px;">
+    <div class="card-header-actions">
+      <h3>Quản Lý & Tải Lên Tệp Tin</h3>
+      <div class="file-storage-info" style="display: flex; gap: 8px;">
+        <span id="file-count-badge" class="badge">0 tệp</span>
+        <span id="file-size-badge" class="badge-active">0 B</span>
+      </div>
+    </div>
+    <div class="file-actions" style="margin-top: 16px;">
+      <button type="button" class="upload-btn" onclick="triggerFileSelect()">
+        📁 Chọn Tệp Tải Lên
+      </button>
+      <input type="file" id="file-upload-input" onchange="handleFileInputChange(this)" style="position:absolute; top:-9999px; left:-9999px; opacity:0; width:1px; height:1px;" />
+      <div id="dropzone" onclick="triggerFileSelect()">
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="var(--primary)"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+        <br>Kéo &amp; thả tệp tin vào đây (hoặc nhấp để chọn tệp)
+      </div>
+    </div>
+
+    <!-- Upload Progress Container -->
+    <div id="upload-progress-container" style="display: none; margin-top: 16px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">
+        <span id="upload-filename">Uploading...</span>
+        <span id="upload-percentage">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div id="upload-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- File List Card -->
+  <div class="card">
+    <div class="card-header-actions" style="margin-bottom: 16px;">
+      <h3>Danh Sách Tệp Đã Lưu Trữ</h3>
+      <input type="text" id="file-search-input" placeholder="🔍 Tìm kiếm tệp..." style="padding: 8px 14px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.9rem; width: 240px;" />
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tên Tệp Tin</th>
+          <th>Kích Thước</th>
+          <th>Ngày Tải Lên</th>
+          <th style="text-align: right;">Hành Động</th>
+        </tr>
+      </thead>
+      <tbody id="file-table-body">
+        <tr>
+          <td colspan="4" style="text-align:center; color: var(--text-muted); padding: 24px;">Đang tải danh sách tệp...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

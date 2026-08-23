@@ -1,0 +1,516 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SmartApp Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lib/drawflow.min.css">
+  <!-- Load Shared Polyfills & Core Libraries FIRST before includes -->
+  <script src="common.js"></script>
+  <script src="lib/drawflow.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <div class="sidebar">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="var(--primary)"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+        <span>SmartApp</span>
+      </div>
+      <ul class="menu">
+        <li id="nav-dashboard" class="active" onclick="switchTab('dashboard')">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          Tổng Quan
+        </li>
+        <li id="nav-users" onclick="switchTab('users')">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          Thành Viên
+        </li>
+        <li id="nav-files" onclick="switchTab('files')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+          Tệp Tin
+        </li>
+        <li id="nav-workflow" onclick="switchTab('workflow')">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+          Sơ Đồ Workflow
+        </li>
+        <li id="nav-components" onclick="switchTab('components')">
+          <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+          Bộ Elements UI
+        </li>
+        <li id="nav-settings" onclick="switchTab('settings')">
+          <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+          Cài Đặt
+        </li>
+      </ul>
+    </div>
+    <div class="main">
+      <div class="header">
+        <h2 id="page-title">Tổng Quan Hệ Thống</h2>
+        <div class="user-profile" onclick="openLoginModal()" style="cursor:pointer;" title="Nhấp để đăng nhập / đăng xuất">
+          <img src="https://ui-avatars.com/api/?name=Admin&background=1a73e8&color=fff" />
+          <span>Admin User</span>
+        </div>
+      </div>
+      
+      <div class="content" id="app-content">
+        <!-- 1. Dashboard Tab -->
+        <div id="tab-dashboard" class="tab-content active">
+          <div class="card-grid">
+            <div class="card">
+              <h3>Total Users</h3>
+              <p class="stat" id="stat-total-users">--</p>
+            </div>
+            <div class="card">
+              <h3>Active Sessions</h3>
+              <p class="stat" id="stat-active-sessions">--</p>
+            </div>
+            <div class="card">
+              <h3>CPU &amp; RAM Load</h3>
+              <p class="stat"><span id="stat-cpu-usage">--%</span> / <span id="stat-ram-usage">--%</span></p>
+            </div>
+            <div class="card">
+              <h3>System Status</h3>
+              <p class="stat success" id="stat-system-status">Online</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 20px;">
+            <div class="card-header-actions" style="margin-bottom: 12px;">
+              <h3>Thao Tác Nhanh &amp; Hoạt Động Hệ Thống</h3>
+            </div>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <button type="button" class="primary" onclick="switchTab('users'); openModal();">➕ Thêm Thành Viên Nhanh</button>
+              <button type="button" class="upload-btn" onclick="switchTab('files'); triggerFileSelect();">📁 Tải Lên Tệp Tin Nhanh</button>
+            </div>
+            <div style="background: var(--bg-elevated); padding: 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+              🟢 Hệ thống <strong>SmartApp SaaS Dashboard</strong> đang hoạt động ổn định. Kết nối WebSocket thời gian thực đang chạy bình thường.
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Users Tab -->
+        <div id="tab-users" class="tab-content">
+          <div class="card">
+            <div class="card-header-actions">
+              <h3>Quản Lý Thành Viên</h3>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="user-search-input" placeholder="🔍 Tìm kiếm thành viên..." style="padding: 8px 14px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.9rem; width: 220px;" />
+                <button type="button" id="btn-open-add-modal" class="primary" onclick="openModal()">+ Thêm mới</button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Họ và Tên</th>
+                  <th>Email</th>
+                  <th>Giới tính</th>
+                  <th>Ngày tham gia</th>
+                  <th>Trạng thái</th>
+                  <th>Vai trò</th>
+                  <th style="text-align: right;">Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="user-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- User Modal Overlay -->
+        <div id="user-modal" class="modal-overlay" style="display: none;">
+          <div class="modal-card" style="width: 450px;">
+            <div class="modal-header">
+              <h3 id="modal-title">Thêm Người Dùng</h3>
+              <button id="btn-close-modal" class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form id="user-form" onsubmit="event.preventDefault(); saveUser();">
+                <input type="text" id="field-id" style="display: none;" value="" />
+                
+                <div class="form-group">
+                  <label for="field-name">Họ và Tên</label>
+                  <input type="text" id="field-name" required placeholder="Nhập họ và tên..." />
+                </div>
+                
+                <div class="form-group">
+                  <label for="field-email">Email</label>
+                  <input type="text" id="field-email" required placeholder="Nhập email..." />
+                </div>
+
+                <div class="form-group">
+                  <label>Giới tính</label>
+                  <div class="gender-radio-container">
+                    <label>
+                      <input type="radio" name="gender" id="field-gender-male" value="Nam" checked />
+                      Nam
+                    </label>
+                    <label>
+                      <input type="radio" name="gender" id="field-gender-female" value="Nữ" />
+                      Nữ
+                    </label>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="field-date">Ngày tham gia</label>
+                  <input type="date" id="field-date" required />
+                </div>
+
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="field-active" />
+                    Kích hoạt tài khoản (Active)
+                  </label>
+                </div>
+                
+                <div class="form-group">
+                  <label for="field-role">Vai trò</label>
+                  <select id="field-role">
+                    <option value="Admin">Admin</option>
+                    <option value="Editor">Editor</option>
+                    <option value="User">User</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="field-notes">Ghi chú</label>
+                  <textarea id="field-notes" placeholder="Ghi chú về thành viên..." rows="2" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; box-sizing:border-box; font-family:inherit;"></textarea>
+                </div>
+
+                <div class="form-actions">
+                  <button type="button" id="btn-cancel-modal" onclick="closeModal()">Hủy</button>
+                  <button type="button" id="btn-save-user" class="primary" onclick="saveUser()">Lưu</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Files Tab -->
+        <div id="tab-files" class="tab-content">
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header-actions">
+              <h3>Quản Lý & Tải Lên Tệp Tin</h3>
+              <div class="file-storage-info" style="display: flex; gap: 8px;">
+                <span id="file-count-badge" class="badge">0 tệp</span>
+                <span id="file-size-badge" class="badge-active">0 B</span>
+              </div>
+            </div>
+            <div class="file-actions" style="margin-top: 16px;">
+              <button type="button" class="upload-btn" onclick="triggerFileSelect()">
+                📁 Chọn Tệp Tải Lên
+              </button>
+              <input type="file" id="hidden-file-input" onchange="uploadSelectedFile(this)" style="position:absolute; top:-9999px; left:-9999px; opacity:0; width:1px; height:1px;" />
+              <div id="dropzone" onclick="triggerFileSelect()">
+                <svg viewBox="0 0 24 24" width="44" height="44" fill="var(--primary)"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                <br>Kéo &amp; thả tệp tin vào đây (hoặc nhấp để chọn tệp)
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header-actions" style="margin-bottom: 16px;">
+              <h3>Danh Sách Tệp Đã Lưu Trữ</h3>
+              <input type="text" id="file-search-input" placeholder="🔍 Tìm kiếm tệp..." style="padding: 8px 14px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.9rem; width: 240px;" />
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tên Tệp Tin</th>
+                  <th>Kích Thước</th>
+                  <th>Loại Tệp</th>
+                  <th>Ngày Tải Lên</th>
+                  <th>Thư Mục</th>
+                  <th style="text-align: right;">Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="file-table-body">
+                <tr>
+                  <td colspan="6" style="text-align:center; color: var(--text-muted); padding: 24px;">Đang tải danh sách tệp...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4. Sơ đồ Workflow Tab -->
+        <div id="tab-workflow" class="tab-content">
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header-actions" style="margin-bottom: 12px;">
+              <h3>⚡ Quy Trình Tự Động Hóa (Drawflow Visual Flow Graph)</h3>
+              <div style="display: flex; gap: 8px;">
+                <span id="wf-status-badge" class="badge badge-active">🟢 Drawflow Engine Ready</span>
+                <span id="wf-node-count" class="badge">5 Nodes</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-elevated); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-default);">
+              <div style="display: flex; gap: 10px;">
+                <button type="button" class="primary" onclick="runWorkflowSimulation()" style="display: flex; align-items: center; gap: 6px;">
+                  ▶ Chạy Quy Trình (Run Flow Simulation)
+                </button>
+                <button type="button" class="upload-btn" onclick="addNewWorkflowNode()">
+                  ➕ Thêm Node Mới
+                </button>
+                <button type="button" style="padding: 8px 14px; background: transparent; border: 1px solid var(--border-default); color: var(--text-secondary); border-radius: 6px; cursor: pointer;" onclick="resetWorkflowGraph()">
+                  🔄 Reset Graph
+                </button>
+              </div>
+
+              <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                Thời gian thực thi: <strong id="wf-exec-time" style="color: var(--text-main);">0.00s</strong>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 20px;">
+            <div class="card" style="position: relative; height: 480px; padding: 0; overflow: hidden; background: var(--bg-base); border: 1px solid var(--border-default);">
+              <div style="position: absolute; top: 12px; left: 16px; font-size: 0.8rem; color: var(--text-muted); pointer-events: none; z-index: 10;">
+                💡 Màn hình Drawflow Graph Engine (Nhấp giữ kéo thả Node, kết nối các cổng Input/Output)
+              </div>
+              <div id="drawflow" style="width: 100%; height: 100%;"></div>
+            </div>
+
+            <div class="card" style="background: var(--bg-surface); border: 1px solid var(--border-default);">
+              <h3 style="margin-top: 0; font-size: 1rem; color: var(--text-main); border-bottom: 1px solid var(--border-default); padding-bottom: 10px;">
+                🔍 Node Inspector
+              </h3>
+              
+              <div id="wf-inspector-content">
+                <div style="margin-bottom: 12px;">
+                  <label style="font-size: 0.75rem; color: var(--text-muted); display: block;">Tên Node</label>
+                  <strong id="wf-inspect-name" style="font-size: 0.95rem; color: var(--text-main);">HTTP Webhook</strong>
+                </div>
+                <div style="margin-bottom: 12px;">
+                  <label style="font-size: 0.75rem; color: var(--text-muted); display: block;">Loại Node</label>
+                  <span id="wf-inspect-type" class="badge">Trigger</span>
+                </div>
+                <div style="margin-bottom: 12px;">
+                  <label style="font-size: 0.75rem; color: var(--text-muted); display: block;">Trạng thái</label>
+                  <span id="wf-inspect-status" class="badge badge-active">Active</span>
+                </div>
+                <div style="margin-bottom: 16px;">
+                  <label style="font-size: 0.75rem; color: var(--text-muted); display: block;">Cấu hình / Parameters</label>
+                  <textarea id="wf-inspect-params" rows="5" readonly style="width: 100%; font-family: monospace; font-size: 0.8rem; padding: 8px; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-default); border-radius: 6px;">{}</textarea>
+                </div>
+                <button type="button" class="primary" onclick="showMsg('Tính năng thực thi riêng lẻ đang được cấu hình!', 'info')" style="width: 100%; padding: 8px; font-size: 0.85rem;">⚡ Chạy Riêng Node Này</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. UI Elements Tab -->
+        <div id="tab-components" class="tab-content">
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header-actions" style="margin-bottom: 16px;">
+              <h3>📊 Báo Cáo &amp; Biểu Đồ Thống Kê (Charts &amp; Graphs)</h3>
+              <span class="badge badge-active">Realtime SVG Charts</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+              <div style="background: var(--bg-elevated); padding: 18px; border-radius: 10px; border: 1px solid var(--border-default);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <h4 style="margin: 0; font-size: 0.95rem; color: var(--text-main);">Xu Hướng Lượng Truy Cập &amp; Doanh Thu</h4>
+                  <span style="font-size: 0.8rem; color: var(--text-muted);">7 ngày gần đây</span>
+                </div>
+                <div style="position: relative; height: 180px;">
+                  <svg viewBox="0 0 500 150" width="100%" height="100%" style="overflow: visible;">
+                    <defs>
+                      <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.4"/>
+                        <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.0"/>
+                      </linearGradient>
+                    </defs>
+                    <line x1="0" y1="30" x2="500" y2="30" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"/>
+                    <line x1="0" y1="75" x2="500" y2="75" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"/>
+                    <line x1="0" y1="120" x2="500" y2="120" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4"/>
+                    <path d="M 0,110 Q 80,40 160,80 T 320,30 T 500,60 L 500,150 L 0,150 Z" fill="url(#chartGradient)"/>
+                    <path d="M 0,110 Q 80,40 160,80 T 320,30 T 500,60" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="0" cy="110" r="4" fill="var(--primary)"/>
+                    <circle cx="120" cy="55" r="4" fill="var(--primary)"/>
+                    <circle cx="240" cy="70" r="4" fill="var(--primary)"/>
+                    <circle cx="360" cy="30" r="5" fill="#6366f1" stroke="#fff" stroke-width="2"/>
+                    <circle cx="500" cy="60" r="4" fill="var(--primary)"/>
+                  </svg>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted);">
+                  <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>
+                </div>
+              </div>
+
+              <div style="background: var(--bg-elevated); padding: 18px; border-radius: 10px; border: 1px solid var(--border-default);">
+                <h4 style="margin: 0 0 16px 0; font-size: 0.95rem; color: var(--text-main);">Tỷ Lệ Chuyển Đổi Hàng Tháng</h4>
+                <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 130px; padding-top: 10px;">
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div style="width: 24px; height: 60px; background: var(--primary-light); border-radius: 4px;"></div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Th4</span>
+                  </div>
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div style="width: 24px; height: 95px; background: var(--primary); border-radius: 4px;"></div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Th5</span>
+                  </div>
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div style="width: 24px; height: 45px; background: var(--primary-light); border-radius: 4px;"></div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Th6</span>
+                  </div>
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <div style="width: 24px; height: 115px; background: #6366f1; border-radius: 4px;"></div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Th7</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header-actions" style="margin-bottom: 16px;">
+              <h3>🎛️ Nút Bấm, Công Tắc Switch &amp; Thanh Trượt Slider</h3>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+              <div style="background: var(--bg-elevated); padding: 16px; border-radius: 10px; border: 1px solid var(--border-default);">
+                <h4 style="margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-secondary);">Công Tắc Switch (Toggle)</h4>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                  <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                    <span style="font-size: 0.9rem;">Thông báo Email</span>
+                    <input type="checkbox" class="toggle-switch-input" id="demo-switch-1" checked />
+                  </label>
+                  <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                    <span style="font-size: 0.9rem;">Bảo mật 2 Lớp (2FA)</span>
+                    <input type="checkbox" class="toggle-switch-input" id="demo-switch-2" checked />
+                  </label>
+                  <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                    <span style="font-size: 0.9rem;">Chế độ Đêm (Dark Mode)</span>
+                    <input type="checkbox" class="toggle-switch-input" id="demo-switch-3" checked />
+                  </label>
+                </div>
+              </div>
+
+              <div style="background: var(--bg-elevated); padding: 16px; border-radius: 10px; border: 1px solid var(--border-default);">
+                <h4 style="margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-secondary);">Thanh Trượt Slider (Range)</h4>
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+                      <span>Mức Giới Hạn CPU</span>
+                      <strong id="slider-val-1">75%</strong>
+                    </div>
+                    <input type="range" id="demo-slider-1" min="0" max="100" value="75" style="width:100%; cursor:pointer;" />
+                  </div>
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+                      <span>Dung Lượng Lưu Trữ</span>
+                      <strong id="slider-val-2">45 GB</strong>
+                    </div>
+                    <input type="range" id="demo-slider-2" min="5" max="100" value="45" style="width:100%; cursor:pointer;" />
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: var(--bg-elevated); padding: 16px; border-radius: 10px; border: 1px solid var(--border-default);">
+                <h4 style="margin: 0 0 14px 0; font-size: 0.9rem; color: var(--text-secondary);">Nhãn Trạng Thái &amp; Badges</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                  <span class="badge badge-active">🟢 Active</span>
+                  <span class="badge badge-inactive">🔴 Inactive</span>
+                  <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);">⚡ Pending</span>
+                  <span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">🚀 Pro Member</span>
+                  <span class="badge" style="background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3);">💎 VIP User</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header-actions" style="margin-bottom: 16px;">
+              <h3>🔔 Khung Thông Báo Alerts &amp; Thẻ Chỉ Số KPI</h3>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; padding: 14px 16px; border-radius: 6px; color: #93c5fd; font-size: 0.9rem;">
+                <strong>ℹ️ Thông tin:</strong> Phiên bản SmartApp Dashboard v2.5 đã được cập nhật thành công.
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; padding: 14px 16px; border-radius: 6px; color: #6ee7b7; font-size: 0.9rem;">
+                <strong>✅ Thành công:</strong> Kết nối Cơ sở dữ liệu và WebSockets hoạt động với độ trễ &lt; 5ms.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Settings Tab -->
+        <div id="tab-settings" class="tab-content">
+          <div class="card">
+            <div class="card-header-actions" style="margin-bottom: 16px;">
+              <h3>Cấu Hình &amp; Thiết Lập Hệ Thống</h3>
+            </div>
+            <form id="settings-form" onsubmit="event.preventDefault(); showMsg('Đã lưu cấu hình hệ thống!', 'success');">
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label for="setting-app-title" style="display:block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.9rem;">Tên Ứng Dụng / Tiêu Đề Dashboard</label>
+                <input type="text" id="setting-app-title" value="SmartApp SaaS Admin" style="width: 100%; max-width: 420px; padding: 10px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.95rem;" />
+              </div>
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label for="setting-refresh-rate" style="display:block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.9rem;">Tần Suất Cập Nhật Thống Kê</label>
+                <select id="setting-refresh-rate" style="width: 100%; max-width: 420px; padding: 10px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.95rem;">
+                  <option value="2" selected>2 giây (Thời gian thực WebSocket)</option>
+                  <option value="5">5 giây</option>
+                  <option value="10">10 giây</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-main); font-size: 0.95rem;">
+                  <input type="checkbox" id="setting-notify" checked />
+                  Hiển thị thông báo Toast khi có thay đổi dữ liệu
+                </label>
+              </div>
+              <button type="button" class="primary" onclick="showMsg('Đã lưu cấu hình hệ thống thành công!', 'success')" style="padding: 10px 24px; font-size: 0.95rem;">💾 Lưu Thiết Lập</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- 7. Auth Modal -->
+        <div id="login-modal" class="modal-overlay" style="display: none;">
+          <div class="modal-card" style="width: 400px; padding: 28px;">
+            <div style="text-align: center; margin-bottom: 24px;">
+              <div style="width: 50px; height: 50px; background: var(--primary-light); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="var(--primary)"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z"/></svg>
+              </div>
+              <h3 style="margin: 0 0 6px 0; font-size: 1.3rem; color: var(--text-main);">Đăng Nhập SmartApp</h3>
+              <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">Nhập thông tin quản trị viên để tiếp tục</p>
+            </div>
+            <form id="login-form" onsubmit="event.preventDefault(); showMsg('Đăng nhập thành công!', 'success'); closeModal();">
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label for="login-email" style="display:block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Email Quản Trị</label>
+                <input type="email" id="login-email" required value="admin@example.com" placeholder="admin@example.com" style="width:100%; padding: 10px 12px; border:1px solid var(--border-default); border-radius:6px; background:var(--bg-input); color:var(--text-main);" />
+              </div>
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label for="login-password" style="display:block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-secondary);">Mật Khẩu</label>
+                <input type="password" id="login-password" required value="admin123" placeholder="••••••••" style="width:100%; padding: 10px 12px; border:1px solid var(--border-default); border-radius:6px; background:var(--bg-input); color:var(--text-main);" />
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.85rem;">
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text-secondary);">
+                  <input type="checkbox" id="login-remember" checked />
+                  Ghi nhớ đăng nhập
+                </label>
+                <a href="javascript:void(0)" onclick="showMsg('Liên hệ Admin hệ thống để cấp lại mật khẩu', 'info')" style="color:var(--primary); text-decoration:none;">Quên mật khẩu?</a>
+              </div>
+              <button type="submit" class="primary" style="width:100%; padding: 12px; font-size: 0.95rem; font-weight:600; border-radius:6px; margin-bottom: 12px;">🔐 Đăng Nhập Hệ Thống</button>
+              <button type="button" onclick="closeModal()" style="width:100%; padding: 10px; background:transparent; border:1px solid var(--border-default); color:var(--text-secondary); border-radius:6px; cursor:pointer;">Hủy</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container for non-blocking notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Load Shared Utility & Modular Page Scripts -->
+  <script src="common.js"></script>
+  <script src="lib/drawflow.min.js"></script>
+  <script src="dashboard/dashboard.js"></script>
+  <script src="users/users.js"></script>
+  <script src="files/files.js"></script>
+  <script src="workflow/workflow.js"></script>
+  <script src="components/components.js"></script>
+  <script src="settings/settings.js"></script>
+  <script src="auth/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<div id="tab-dashboard" class="tab-content active">
+  <div class="card-grid">
+    <div class="card">
+      <h3>Total Users</h3>
+      <p class="stat" id="stat-total-users">--</p>
+    </div>
+    <div class="card">
+      <h3>Active Sessions</h3>
+      <p class="stat" id="stat-active-sessions">--</p>
+    </div>
+    <div class="card">
+      <h3>CPU &amp; RAM Load</h3>
+      <p class="stat"><span id="stat-cpu-usage">--%</span> / <span id="stat-ram-usage">--%</span></p>
+    </div>
+    <div class="card">
+      <h3>System Status</h3>
+      <p class="stat success" id="stat-system-status">Online</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 20px;">
+    <div class="card-header-actions" style="margin-bottom: 12px;">
+      <h3>Thao Tác Nhanh &amp; Hoạt Động Hệ Thống</h3>
+    </div>
+    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+      <button type="button" class="primary" onclick="switchTab('users'); openModal();">➕ Thêm Thành Viên Nhanh</button>
+      <button type="button" class="upload-btn" onclick="switchTab('files'); triggerFileSelect();">📁 Tải Lên Tệp Tin Nhanh</button>
+    </div>
+    <div style="background: var(--bg-elevated); padding: 16px; border-radius: 8px; font-size: 0.9rem; color: var(--text-secondary);">
+      🟢 Hệ thống <strong>SmartApp SaaS Dashboard</strong> đang hoạt động ổn định. Kết nối WebSocket thời gian thực đang chạy bình thường.
+    </div>
+  </div>
+</div>

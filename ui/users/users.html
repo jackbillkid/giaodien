@@ -1,0 +1,101 @@
+<div id="tab-users" class="tab-content">
+  <div class="card">
+    <div class="card-header-actions">
+      <h3>Quản Lý Thành Viên</h3>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <input type="text" id="user-search-input" placeholder="🔍 Tìm kiếm thành viên..." style="padding: 8px 14px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.9rem; width: 220px;" />
+        <button type="button" id="btn-open-add-modal" class="primary">+ Thêm mới</button>
+      </div>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Họ và Tên</th>
+          <th>Email</th>
+          <th>Giới tính</th>
+          <th>Ngày tham gia</th>
+          <th>Trạng thái</th>
+          <th>Vai trò</th>
+          <th style="text-align: right;">Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="user-table-body">
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Overlay: OUTSIDE container so it floats on top -->
+<div id="user-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-card" style="width: 450px;">
+    <div class="modal-header">
+      <h3 id="modal-title">Thêm Người Dùng</h3>
+      <button id="btn-close-modal" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="user-form">
+        <input type="text" id="field-id" style="display: none;" value="" />
+        
+        <div class="form-group">
+          <label for="field-name">Họ và Tên</label>
+          <input type="text" id="field-name" required placeholder="Nhập họ và tên..." />
+        </div>
+        
+        <div class="form-group">
+          <label for="field-email">Email</label>
+          <input type="text" id="field-email" required placeholder="Nhập email..." />
+        </div>
+
+        <!-- Radio Inputs: Gender -->
+        <div class="form-group">
+          <label>Giới tính</label>
+          <div class="gender-radio-container">
+            <label>
+              <input type="radio" name="gender" id="field-gender-male" value="Nam" checked />
+              Nam
+            </label>
+            <label>
+              <input type="radio" name="gender" id="field-gender-female" value="Nữ" />
+              Nữ
+            </label>
+          </div>
+        </div>
+
+        <!-- Date Input -->
+        <div class="form-group">
+          <label for="field-date">Ngày tham gia</label>
+          <input type="date" id="field-date" required />
+        </div>
+
+        <!-- Checkbox: Active status -->
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="field-active" />
+            Kích hoạt tài khoản (Active)
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label for="field-role">Vai trò</label>
+          <select id="field-role">
+            <option value="Admin">Admin</option>
+            <option value="Editor">Editor</option>
+            <option value="User">User</option>
+          </select>
+        </div>
+
+        <!-- Textarea: Notes -->
+        <div class="form-group">
+          <label for="field-notes">Ghi chú</label>
+          <textarea id="field-notes" placeholder="Ghi chú về thành viên..." rows="2" style="width:100%; padding:8px; border:1px solid var(--border-color); border-radius:4px; box-sizing:border-box; font-family:inherit;"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="btn-cancel-modal">Hủy</button>
+          <button type="button" id="btn-save-user" class="primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

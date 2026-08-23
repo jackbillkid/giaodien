@@ -1,0 +1,28 @@
+<div id="tab-settings" class="tab-content">
+  <div class="card">
+    <div class="card-header-actions" style="margin-bottom: 16px;">
+      <h3>Cấu Hình &amp; Thiết Lập Hệ Thống</h3>
+    </div>
+    <form id="settings-form" onsubmit="event.preventDefault(); saveSettings();">
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="setting-app-title" style="display:block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.9rem;">Tên Ứng Dụng / Tiêu Đề Dashboard</label>
+        <input type="text" id="setting-app-title" value="SmartApp SaaS Admin" style="width: 100%; max-width: 420px; padding: 10px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.95rem;" />
+      </div>
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label for="setting-refresh-rate" style="display:block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.9rem;">Tần Suất Cập Nhật Thống Kê</label>
+        <select id="setting-refresh-rate" style="width: 100%; max-width: 420px; padding: 10px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-input); color: var(--text-main); font-size: 0.95rem;">
+          <option value="2" selected>2 giây (Thời gian thực WebSocket)</option>
+          <option value="5">5 giây</option>
+          <option value="10">10 giây</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-main); font-size: 0.95rem;">
+          <input type="checkbox" id="setting-notify" checked />
+          Hiển thị thông báo Toast khi có thay đổi dữ liệu
+        </label>
+      </div>
+      <button type="button" class="primary" onclick="saveSettings()" style="padding: 10px 24px; font-size: 0.95rem;">💾 Lưu Thiết Lập</button>
+    </form>
+  </div>
+</div>
